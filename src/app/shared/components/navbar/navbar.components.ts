@@ -24,7 +24,7 @@ export class NavbarComponents {
   ];
 
   signout(): void {
-    localStorage.removeItem('userToken');
+    sessionStorage.removeItem('userToken');
     this.router.navigate(['/login']);
   }
 

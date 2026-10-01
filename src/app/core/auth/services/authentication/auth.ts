@@ -17,8 +17,8 @@ export class Auth {
     return this.httpClient.post<any>(this.apiUrl+'/auth/signin/',userdata,{headers});
   }
   decodeUserToken(){
-    if(localStorage.getItem('userToken')){
-      const token = localStorage.getItem('userToken')!;
+    if(sessionStorage.getItem('userToken')){
+      const token = sessionStorage.getItem('userToken')!;
     const decoded = jwtDecode(token);
     }
 

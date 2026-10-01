@@ -128,7 +128,7 @@ export class LoginComponents {
       this.refSubscription.unsubscribe();
       this.refSubscription=this.authservice.sendloginrdata(this.loginform.value).subscribe({
          next:(res)=>{
-          console.log(res);
+          //console.log(res);
           this.isLoading.set(false);
           this.errormessage.set('');
           const token = res?.accessToken; // ← accessToken مش token
@@ -136,8 +136,7 @@ export class LoginComponents {
            this.errormessage.set('Login succeeded but no token was returned.');
           return;
             }
-
-          localStorage.setItem('userToken', token);
+          sessionStorage.setItem('userToken', token);
           this.authservice.decodeUserToken();
           setTimeout(()=>{
               this.route.navigate(['/home']);

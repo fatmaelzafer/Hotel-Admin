@@ -6,7 +6,7 @@ export const user1Guard: CanActivateFn = (route, state) => {
   const platformId = inject(PLATFORM_ID);
 
   if (isPlatformBrowser(platformId)) {
-    return localStorage.getItem('userToken') !== null;
+    return sessionStorage.getItem('userToken') !== null;
   }
 
   return false;
