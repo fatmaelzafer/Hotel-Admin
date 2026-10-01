@@ -12,7 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Mainhome } from "./component/mainhome/mainhome";
-import { Offers } from "./component/offers/offers";
+
 
 
 //import { RoomsSearchService } from './rooms-search.service';
@@ -23,7 +23,7 @@ import { Offers } from "./component/offers/offers";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule, Mainhome, Offers],
+  imports: [CommonModule, FormsModule, Mainhome],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
