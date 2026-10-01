@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/api:path*",
-      "destination": "https://handsaw-lubricant-yogurt.ngrok-free.dev/:path*"
+      "source": "/api/(.*)",
+      "destination": "https://handsaw-lubricant-yogurt.ngrok-free.dev/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
