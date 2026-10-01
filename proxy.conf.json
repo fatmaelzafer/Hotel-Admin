@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://handsaw-lubricant-yogurt.ngrok-free.dev",
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": { "^/api": "" },
+    "headers": {
+      "ngrok-skip-browser-warning": "true"
+    }
+  }
+}

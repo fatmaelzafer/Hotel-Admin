@@ -6,6 +6,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'add-room-type', renderMode: RenderMode.Server },
   { path: 'home', renderMode: RenderMode.Server },
   { path: 'rooms', renderMode: RenderMode.Server },
+  { path: 'roomsearch/:checkOut/:checkIn/:guests', renderMode: RenderMode.Server },
   {
     path: '**',
     renderMode: RenderMode.Prerender,

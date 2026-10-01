@@ -77,8 +77,8 @@
               "
             >
               <option value="" disabled>Select room type</option>
-              @for (type of roomTypeOptions(); track type) {
-                <option [value]="type">{{ type }}</option>
+              @for (type of roomTypeOptions(); track type._id) {
+                <option [value]="type.name">{{ type.name }}</option>
               }
             </select>
           </div>

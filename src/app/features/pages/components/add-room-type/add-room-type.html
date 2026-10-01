@@ -1,114 +1,260 @@
-<div class="bg-hotel flex min-h-screen items-center justify-center p-4 text-navy">
-  <main class="w-full max-w-3xl rounded-md bg-[rgba(190,210,240,.62)] px-5 py-8 backdrop-blur-sm">
-    <h1 class="mb-2 font-serif text-2xl font-semibold">Add a new room type</h1>
-    <h2 class="mb-6 text-lg font-semibold">Room Details</h2>
+<div class="relative flex min-h-screen w-full items-center justify-center overflow-hidden  px-4 py-10 sm:px-8 md:px-16">
+  <!-- Background image -->
+  <div class="absolute inset-0 -z-10">
+    <img
+      src="/hero.jpg"
+      alt="Nile View Suites at dusk"
+      class="h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 bg-slate-900/20"></div>
+  </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <div class="grid gap-5 md:grid-cols-2">
+  <!-- Add room type card -->
+  <div class="w-full max-w-2xl rounded-2xl border border-white/40 bg-slate-100/70 p-6 shadow-2xl backdrop-blur-md sm:p-8 md:p-10">
+    <h1 class="font-serif text-xl font-semibold text-slate-800 sm:text-2xl">
+      Add a New Room Type
+    </h1>
+    <p class="mt-1.5 text-sm font-semibold text-slate-800 sm:text-base">
+      Define the name and advantages for this room class.
+    </p>
 
+    <form [formGroup]="addRoomTypeForm" (ngSubmit)="onSubmit()" class="mt-6 space-y-5" novalidate aria-label="Add room type form">
+      <!-- Name -->
       <div>
-        <label for="name" class="mb-2 block text-base font-medium text-navy">Room Type Name</label>
+        <label for="name" class="mb-1.5 block text-sm font-semibold text-slate-800">
+          Room Type Name
+        </label>
         <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 20v-9h18v9M3 20h18M5 11V6h14v5M3 14h18"/></svg>
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21V8.25A2.25 2.25 0 016 6h12a2.25 2.25 0 012.25 2.25V21M3.75 21h16.5M3.75 21v-3.375c0-.621.504-1.125 1.125-1.125h1.25c.621 0 1.125.504 1.125 1.125V21m11.25 0v-3.375c0-.621-.504-1.125-1.125-1.125h-1.25c-.621 0-1.125.504-1.125 1.125V21" />
+            </svg>
           </div>
-          <input id="name" type="text" formControlName="name" placeholder="e.g. class-D"
-            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
-            [class.border-red-500]="invalid('name')" [class.border-gray-400]="!invalid('name')">
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. class-D"
+            [attr.aria-invalid]="isInvalid('name')"
+            [attr.aria-describedby]="isInvalid('name') ? 'name-error' : null"
+            class="block w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2"
+            [ngClass]="
+              isInvalid('name')
+                ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+            "
+          />
         </div>
-        @if (invalid('name')) {
-          <p class="mt-1 text-sm text-red-600">Enter the room type name.</p>
+        @if (isInvalid('name')) {
+          <p id="name-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+            {{ errorMessage('name', 'Room type name') }}
+          </p>
         }
       </div>
-      <div>
-        <label for="beds" class="mb-2 block text-base font-medium text-navy">Beds</label>
-        <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/></svg>
+
+      <!-- Beds / View -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label for="beds" class="mb-1.5 block text-sm font-semibold text-slate-800">
+            Beds
+          </label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75v-6.75a2.25 2.25 0 012.25-2.25h15a2.25 2.25 0 012.25 2.25v6.75M2.25 18.75h19.5M2.25 18.75v1.5M21.75 18.75v1.5M6 9.75V6.75A2.25 2.25 0 018.25 4.5h1.5A2.25 2.25 0 0112 6.75v3" />
+              </svg>
+            </div>
+            <input
+              id="beds"
+              type="text"
+              formControlName="beds"
+              placeholder="e.g. Twin Bed"
+              [attr.aria-invalid]="isInvalid('beds')"
+              [attr.aria-describedby]="isInvalid('beds') ? 'beds-error' : null"
+              class="block w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2"
+              [ngClass]="
+                isInvalid('beds')
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                  : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+              "
+            />
           </div>
-          <input id="beds" type="text" formControlName="beds" placeholder="e.g. Twin Bed"
-            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
-            [class.border-red-500]="invalid('beds')" [class.border-gray-400]="!invalid('beds')">
+          @if (isInvalid('beds')) {
+            <p id="beds-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+              {{ errorMessage('beds', 'Beds') }}
+            </p>
+          }
         </div>
-        @if (invalid('beds')) {
-          <p class="mt-1 text-sm text-red-600">Enter the bed type.</p>
-        }
-      </div>
-      <div>
-        <label for="view" class="mb-2 block text-base font-medium text-navy">View</label>
-        <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/></svg>
-          </div>
-          <input id="view" type="text" formControlName="view" placeholder="e.g. Garden View"
-            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
-            [class.border-red-500]="invalid('view')" [class.border-gray-400]="!invalid('view')">
-        </div>
-        @if (invalid('view')) {
-          <p class="mt-1 text-sm text-red-600">Enter the view.</p>
-        }
-      </div>
-      <div>
-        <label for="area" class="mb-2 block text-base font-medium text-navy">Area</label>
-        <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h5M9 4v5"/></svg>
-          </div>
-          <input id="area" type="text" formControlName="area" placeholder="e.g. 30 sqm"
-            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
-            [class.border-red-500]="invalid('area')" [class.border-gray-400]="!invalid('area')">
-        </div>
-        @if (invalid('area')) {
-          <p class="mt-1 text-sm text-red-600">Enter the room area.</p>
-        }
-      </div>
 
         <div>
-          <label for="breakfast" class="mb-2 block text-base font-medium text-navy">Breakfast</label>
-          <select id="breakfast" formControlName="breakfast"
-            class="block w-full rounded-md border border-gray-400 bg-white p-2.5 text-sm text-navy focus:border-navy focus:ring-navy">
-            <option>No</option>
-            <option>Yes</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="livingRoom" class="mb-2 block text-base font-medium text-navy">Living Room</label>
-          <select id="livingRoom" formControlName="livingRoom"
-            class="block w-full rounded-md border border-gray-400 bg-white p-2.5 text-sm text-navy focus:border-navy focus:ring-navy">
-            <option>No</option>
-            <option>Yes</option>
-          </select>
+          <label for="view" class="mb-1.5 block text-sm font-semibold text-slate-800">
+            View
+          </label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12zM15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <input
+              id="view"
+              type="text"
+              formControlName="view"
+              placeholder="e.g. Garden View"
+              [attr.aria-invalid]="isInvalid('view')"
+              [attr.aria-describedby]="isInvalid('view') ? 'view-error' : null"
+              class="block w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2"
+              [ngClass]="
+                isInvalid('view')
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                  : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+              "
+            />
+          </div>
+          @if (isInvalid('view')) {
+            <p id="view-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+              {{ errorMessage('view', 'View') }}
+            </p>
+          }
         </div>
       </div>
 
-      <button type="submit" [disabled]="loading()"
-        class="mt-6 w-full rounded-lg bg-navy px-5 py-2.5 text-center text-base font-medium text-white hover:bg-navy-dark focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-60">
-        Add Room Type
+      <!-- Area / Breakfast -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label for="area" class="mb-1.5 block text-sm font-semibold text-slate-800">
+            Area
+          </label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+              </svg>
+            </div>
+            <input
+              id="area"
+              type="text"
+              formControlName="area"
+              placeholder="e.g. 30 sqm"
+              [attr.aria-invalid]="isInvalid('area')"
+              [attr.aria-describedby]="isInvalid('area') ? 'area-error' : null"
+              class="block w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2"
+              [ngClass]="
+                isInvalid('area')
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                  : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+              "
+            />
+          </div>
+          @if (isInvalid('area')) {
+            <p id="area-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+              {{ errorMessage('area', 'Area') }}
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="breakfast" class="mb-1.5 block text-sm font-semibold text-slate-800">
+            Breakfast Included
+          </label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h13.5v9.75a4.5 4.5 0 01-4.5 4.5h-4.5a4.5 4.5 0 01-4.5-4.5V3zm13.5 3.75H21a2.25 2.25 0 012.25 2.25v.75A2.25 2.25 0 0121 12h-4.5M3 21h13.5" />
+              </svg>
+            </div>
+            <select
+              id="breakfast"
+              formControlName="breakfast"
+              [attr.aria-invalid]="isInvalid('breakfast')"
+              [attr.aria-describedby]="isInvalid('breakfast') ? 'breakfast-error' : null"
+              class="block w-full appearance-none rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2"
+              [ngClass]="
+                isInvalid('breakfast')
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                  : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+              "
+            >
+              <option value="" disabled>Select an option</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Included">Included</option>
+            </select>
+          </div>
+          @if (isInvalid('breakfast')) {
+            <p id="breakfast-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+              {{ errorMessage('breakfast', 'Breakfast') }}
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Living Room -->
+      <div>
+        <label for="livingRoom" class="mb-1.5 block text-sm font-semibold text-slate-800">
+          Living Room / Balcony
+        </label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75l9-6.75 9 6.75V19.5a1.5 1.5 0 01-1.5 1.5h-3.75a.75.75 0 01-.75-.75V15a2.25 2.25 0 00-4.5 0v5.25a.75.75 0 01-.75.75H4.5a1.5 1.5 0 01-1.5-1.5V9.75z" />
+            </svg>
+          </div>
+          <select
+            id="livingRoom"
+            formControlName="livingRoom"
+            [attr.aria-invalid]="isInvalid('livingRoom')"
+            [attr.aria-describedby]="isInvalid('livingRoom') ? 'livingRoom-error' : null"
+            class="block w-full appearance-none rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2"
+            [ngClass]="
+              isInvalid('livingRoom')
+                ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
+                : 'border-slate-300 focus:border-sky-500 focus:ring-sky-200'
+            "
+          >
+            <option value="" disabled>Select an option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Balcony">Balcony</option>
+          </select>
+        </div>
+        @if (isInvalid('livingRoom')) {
+          <p id="livingRoom-error" class="mt-1 text-xs font-medium text-red-600" role="alert">
+            {{ errorMessage('livingRoom', 'Living room') }}
+          </p>
+        }
+      </div>
+
+      <!-- Server-side error -->
+      @if (formError()) {
+        <div class="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert">
+          {{ formError() }}
+        </div>
+      }
+
+      <!-- Success message -->
+      @if (successMessage()) {
+        <div class="rounded-lg border border-green-300 bg-green-50 px-3 py-2 text-sm font-medium text-green-700" role="status">
+          {{ successMessage() }}
+        </div>
+      }
+
+      <!-- Submit button -->
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        class="flex w-full items-center justify-center rounded-lg bg-[#0f2c4c] px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#123356] focus:outline-none focus:ring-4 focus:ring-sky-300 disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+      >
+        @if (isLoading()) {
+          <svg class="mr-2 h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          Adding Room Type...
+        } @else {
+          Add Room Type
+        }
       </button>
     </form>
-
-    @if (alert(); as a) {
-      <div role="alert" class="mt-5 rounded-lg p-4 text-sm"
-        [class.bg-green-50]="a.type === 'success'" [class.text-green-800]="a.type === 'success'"
-        [class.bg-red-50]="a.type === 'error'" [class.text-red-800]="a.type === 'error'"
-        [class.bg-blue-50]="a.type === 'info'" [class.text-blue-800]="a.type === 'info'">
-        {{ a.message }}
-      </div>
-    }
-
-    @if (preview(); as p) {
-      <pre class="mt-3 overflow-x-auto rounded-md bg-white/85 p-3 text-xs">{{ p | json }}</pre>
-    }
-
-    <div class="mt-6 text-base font-medium">
-      Want to go back?
-      <div>
-        <button type="button" (click)="back()"
-          class="mt-2 rounded-full bg-navy px-6 py-2 text-xs font-medium text-white hover:bg-navy-dark focus:outline-none focus:ring-4 focus:ring-blue-300">
-          Back to room types
-        </button>
-      </div>
-    </div>
-  </main>
+  </div>
 </div>

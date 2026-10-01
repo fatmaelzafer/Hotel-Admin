@@ -17,15 +17,19 @@ export class RoomTypeServices {
     getroomtypes():Observable<any>{
       const accessToken = localStorage.getItem('userToken');
        const headers = new HttpHeaders({
-      'Authorization': `ADMIN ${accessToken}`,
-    });
+    'Authorization': `ADMIN ${accessToken}`,
+  });
 
-      return this.httpClient.get<any>(this.apiUrl+'/rooms/types', { headers });
+      return this.httpClient.get<any>(this.apiUrl+'/rooms/types/', { headers });
 
     }
     addroomtypes(userdata:object):Observable<any>{
+      const accessToken = localStorage.getItem('userToken');
+       const headers = new HttpHeaders({
+    'Authorization': `ADMIN ${accessToken}`,
+  });
 
-      return this.httpClient.post<any>(this.apiUrl+'/rooms/types',userdata);
+      return this.httpClient.post<any>(this.apiUrl+'/rooms/types/',userdata, { headers });
 
     }
 }

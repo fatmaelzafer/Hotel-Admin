@@ -43,10 +43,9 @@ export class AddRoom {
   roomtypes():void{
     this.roomTypeServices.getroomtypes().subscribe({
       next:(res)=>{
-        console.log(res);
         this.roomTypeOptions.set(res);
       },error:(err)=>{
-
+        console.log(err);
       }
     })
   }
@@ -95,6 +94,7 @@ export class AddRoom {
     this.roomServices.addrooms(payload).subscribe({
       next: (res) => {
         this.isLoading.set(false);
+        console.log(res);
         this.successMessage.set(`Room ${payload.roomNumber} added successfully.`);
         this.addRoomForm.reset({
           roomNumber: 0,

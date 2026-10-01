@@ -33,6 +33,7 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./core/layouts/components/userroom/userrooms/userrooms').then((c) => c.Userrooms),
         children: [
+          { path: 'roomsearch/:checkOut/:checkIn/:guests', loadComponent: () => import('./features/pages/components/contact/contact.page').then((c) => c.ContactPage) },
           { path: 'rooms', loadComponent: () => import('./features/pages/components/rooms/rooms.page').then((c) => c.RoomsPage) },
         ],
       },

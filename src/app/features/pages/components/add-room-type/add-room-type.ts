@@ -1,80 +1,131 @@
-;
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { JsonPipe, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { RoomTypeServices } from '../../../../core/services/roomtypes/room-type-services';
-import { Roomtypes, typedata, Types } from '../../../../shared/models/roomTypes/roomtypes';
 
+/** Strongly-typed shape of the room-advantages sub-object. */
+export interface RoomAdvantages {
+  beds: string;
+  view: string;
+  area: string;
+  breakfast: string;
+  livingRoom: string;
+}
+
+/** Strongly-typed shape of the add-room-type form values. */
+export interface AddRoomTypeFormValue {
+  name: string;
+  beds: string;
+  view: string;
+  area: string;
+  breakfast: string;
+  livingRoom: string;
+}
+
+/** Payload sent to the backend, matching the nested roomAdvantages shape. */
+export interface AddRoomTypePayload {
+  name: string;
+  roomAdvantages: RoomAdvantages;
+}
+
+export type AddRoomTypeForm = FormGroup<{
+  name: FormControl<string>;
+  beds: FormControl<string>;
+  view: FormControl<string>;
+  area: FormControl<string>;
+  breakfast: FormControl<string>;
+  livingRoom: FormControl<string>;
+}>;
 
 type AlertType = 'info' | 'success' | 'error';
 @Component({
   selector: 'app-add-room-type',
-  imports: [ReactiveFormsModule, JsonPipe],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-room-type.html',
   styleUrl: './add-room-type.css',
 })
 export class AddRoomType {
-private fb = inject(FormBuilder);
-  private service = inject(RoomTypeServices);
-  private location = inject(Location);
+ private readonly fb = inject(FormBuilder);
 
-  submitted = signal(false);
-  loading = signal(false);
-  alert = signal<{ type: AlertType; message: string } | null>(null);
-  preview = signal<typedata | null>(null);
+  readonly isLoading = signal<boolean>(false);
+  readonly formError = signal<string>('');
+  readonly successMessage = signal<string>('');
+  private readonly services=inject(RoomTypeServices);
+  readonly addRoomTypeForm: FormGroup;
 
-  form = this.fb.nonNullable.group({
-    name: ['', Validators.required],
-    beds: ['', Validators.required],
-    view: ['', Validators.required],
-    area: ['', Validators.required],
-    breakfast: ['No'],
-    livingRoom: ['No'],
-  });
-
-  invalid(control: 'name' | 'beds' | 'view' | 'area') {
-    return this.submitted() && this.form.controls[control].invalid;
-  }
-
-  submit() {
-    this.submitted.set(true);
-    if (this.form.invalid) return;
-
-    const v = this.form.getRawValue();
-    // نفس شكل الـ JSON اللي في Postman
-    const payload: typedata = {
-      name: v.name.trim(),
-      roomAdvantages: {
-        beds: v.beds.trim(),
-        view: v.view.trim(),
-        area: v.area.trim(),
-        breakfast: v.breakfast,
-        livingRoom: v.livingRoom,
-      },
-    };
-    this.preview.set(payload);
-
-    this.loading.set(true);
-    this.alert.set({ type: 'info', message: 'Adding room type…' });
-
-    this.service.addroomtypes(payload).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.alert.set({ type: 'success', message: 'Room type added.' });
-        this.form.reset({ breakfast: 'No', livingRoom: 'No' });
-        this.submitted.set(false);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.alert.set({
-          type: 'error',
-          message: 'Could not add the room type: ' + (err.error?.message ?? err.message),
-        });
-      },
+  constructor() {
+    this.addRoomTypeForm = this.fb.nonNullable.group({
+      name: this.fb.nonNullable.control<string>('', [Validators.required]),
+      beds: this.fb.nonNullable.control<string>('', [Validators.required]),
+      view: this.fb.nonNullable.control<string>('', [Validators.required]),
+      area: this.fb.nonNullable.control<string>('', [Validators.required]),
+      breakfast: this.fb.nonNullable.control<string>('', [Validators.required]),
+      livingRoom: this.fb.nonNullable.control<string>('', [Validators.required]),
     });
   }
 
-  back() {
-    this.location.back();
+  /** True only once the control is invalid AND the user has interacted with it. */
+  isInvalid(controlName: keyof AddRoomTypeFormValue): boolean {
+    const control: AbstractControl | null = this.addRoomTypeForm.get(controlName as string);
+    return !!control && control.invalid && (control.touched || control.dirty);
+  }
+
+  errorMessage(controlName: keyof AddRoomTypeFormValue, label: string): string {
+    const control = this.addRoomTypeForm.get(controlName as string);
+    if (!control?.errors) return '';
+    if (control.errors['required']) return `${label} is required.`;
+    return `Invalid ${label.toLowerCase()}.`;
+  }
+
+
+  onSubmit(): void {
+    this.formError.set('');
+    this.successMessage.set('');
+
+    if (this.addRoomTypeForm.invalid) {
+      this.addRoomTypeForm.markAllAsTouched();
+      return;
+    }
+
+    const value: AddRoomTypeFormValue = this.addRoomTypeForm.getRawValue();
+    const payload: AddRoomTypePayload = {
+      name: value.name,
+      roomAdvantages: {
+        beds: value.beds,
+        view: value.view,
+        area: value.area,
+        breakfast: value.breakfast,
+        livingRoom: value.livingRoom,
+      },
+    };
+
+    this.isLoading.set(true);
+
+    this.services.addroomtypes(payload).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.successMessage.set(`Room type "${payload.name}" added successfully.`);
+        this.addRoomTypeForm.reset({
+          name: '',
+          beds: '',
+          view: '',
+          area: '',
+          breakfast: '',
+          livingRoom: '',
+        });
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.log(err);
+        this.formError.set(err.error?.err?.message ?? err.error?.message ?? 'Failed to add room type. Please try again.');
+      },
+    });
   }
 }
