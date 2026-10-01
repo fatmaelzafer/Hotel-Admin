@@ -17,3 +17,14 @@ export interface RoomAdvantages {
   _id: string
   id: string
 }
+export interface typedata{
+  name: string
+  roomAdvantages: roomAdvantages
+}
+export interface roomAdvantages {
+  beds: string
+  view: string
+  area: string
+  breakfast: string
+  livingRoom: string
+}

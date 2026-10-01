@@ -1,0 +1,7 @@
+
+    :host { display: block; }
+    .bg-hotel {
+      background:
+        url('/hotel-bg.jpg') center / cover no-repeat,
+        linear-gradient(180deg, #1c3552 0%, #2f5578 55%, #0e6a86 100%);
+    }

@@ -1,1 +1,114 @@
-<p>add-room-type works!</p>
+<div class="bg-hotel flex min-h-screen items-center justify-center p-4 text-navy">
+  <main class="w-full max-w-3xl rounded-md bg-[rgba(190,210,240,.62)] px-5 py-8 backdrop-blur-sm">
+    <h1 class="mb-2 font-serif text-2xl font-semibold">Add a new room type</h1>
+    <h2 class="mb-6 text-lg font-semibold">Room Details</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="grid gap-5 md:grid-cols-2">
+
+      <div>
+        <label for="name" class="mb-2 block text-base font-medium text-navy">Room Type Name</label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 20v-9h18v9M3 20h18M5 11V6h14v5M3 14h18"/></svg>
+          </div>
+          <input id="name" type="text" formControlName="name" placeholder="e.g. class-D"
+            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
+            [class.border-red-500]="invalid('name')" [class.border-gray-400]="!invalid('name')">
+        </div>
+        @if (invalid('name')) {
+          <p class="mt-1 text-sm text-red-600">Enter the room type name.</p>
+        }
+      </div>
+      <div>
+        <label for="beds" class="mb-2 block text-base font-medium text-navy">Beds</label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/></svg>
+          </div>
+          <input id="beds" type="text" formControlName="beds" placeholder="e.g. Twin Bed"
+            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
+            [class.border-red-500]="invalid('beds')" [class.border-gray-400]="!invalid('beds')">
+        </div>
+        @if (invalid('beds')) {
+          <p class="mt-1 text-sm text-red-600">Enter the bed type.</p>
+        }
+      </div>
+      <div>
+        <label for="view" class="mb-2 block text-base font-medium text-navy">View</label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/></svg>
+          </div>
+          <input id="view" type="text" formControlName="view" placeholder="e.g. Garden View"
+            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
+            [class.border-red-500]="invalid('view')" [class.border-gray-400]="!invalid('view')">
+        </div>
+        @if (invalid('view')) {
+          <p class="mt-1 text-sm text-red-600">Enter the view.</p>
+        }
+      </div>
+      <div>
+        <label for="area" class="mb-2 block text-base font-medium text-navy">Area</label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+            <svg class="h-5 w-5 text-navy" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h5M9 4v5"/></svg>
+          </div>
+          <input id="area" type="text" formControlName="area" placeholder="e.g. 30 sqm"
+            class="block w-full rounded-md border bg-white p-2.5 ps-10 text-sm text-navy placeholder-gray-400 focus:border-navy focus:ring-navy"
+            [class.border-red-500]="invalid('area')" [class.border-gray-400]="!invalid('area')">
+        </div>
+        @if (invalid('area')) {
+          <p class="mt-1 text-sm text-red-600">Enter the room area.</p>
+        }
+      </div>
+
+        <div>
+          <label for="breakfast" class="mb-2 block text-base font-medium text-navy">Breakfast</label>
+          <select id="breakfast" formControlName="breakfast"
+            class="block w-full rounded-md border border-gray-400 bg-white p-2.5 text-sm text-navy focus:border-navy focus:ring-navy">
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="livingRoom" class="mb-2 block text-base font-medium text-navy">Living Room</label>
+          <select id="livingRoom" formControlName="livingRoom"
+            class="block w-full rounded-md border border-gray-400 bg-white p-2.5 text-sm text-navy focus:border-navy focus:ring-navy">
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loading()"
+        class="mt-6 w-full rounded-lg bg-navy px-5 py-2.5 text-center text-base font-medium text-white hover:bg-navy-dark focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-60">
+        Add Room Type
+      </button>
+    </form>
+
+    @if (alert(); as a) {
+      <div role="alert" class="mt-5 rounded-lg p-4 text-sm"
+        [class.bg-green-50]="a.type === 'success'" [class.text-green-800]="a.type === 'success'"
+        [class.bg-red-50]="a.type === 'error'" [class.text-red-800]="a.type === 'error'"
+        [class.bg-blue-50]="a.type === 'info'" [class.text-blue-800]="a.type === 'info'">
+        {{ a.message }}
+      </div>
+    }
+
+    @if (preview(); as p) {
+      <pre class="mt-3 overflow-x-auto rounded-md bg-white/85 p-3 text-xs">{{ p | json }}</pre>
+    }
+
+    <div class="mt-6 text-base font-medium">
+      Want to go back?
+      <div>
+        <button type="button" (click)="back()"
+          class="mt-2 rounded-full bg-navy px-6 py-2 text-xs font-medium text-white hover:bg-navy-dark focus:outline-none focus:ring-4 focus:ring-blue-300">
+          Back to room types
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
